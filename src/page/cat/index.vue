@@ -1,131 +1,146 @@
 <template>
-<div class="cat">
-<div class="left">
-<ul>
-  <li v-for="(item,index) in cat1" :key="index" @click="chang(item.catid)">{{item.catname}}</li>
+  <div class="catWrapper">
+    <x-header :left-options="{backText: ''}"  style="position:fixed;left:0;right:0;top:0;z-index:100;">分类</x-header>     
+    <section class="menu_container">
+        <section class="menu_left" id="wrapper_menu" ref="wrapperMenu">
+            <ul>
+                <li  v-for="i in 30" :key="i" class="menu_left_li" :class="{activity_menu: i == menuIndex}" @click="chooseMenu(i)">
 
-</ul>
+                    <span>{{i}}男装</span>
 
-</div>
-<div class="right">
-  <ul  v-show="sub896">
-    <li v-for="(item,index) in catFdq" :key="index">
-      <h2>{{item.type}}</h2>
-      <p v-for="(item,index) in item.count1" :key="index">
-      	<router-link :to="{name: 'List', params: { id: item.catname }}">
-        {{item.catname}}
-       </router-link>
-      	</p>
-    </li> 
-  </ul>
-  <ul  v-show="sub3744">
-    <li v-for="(item,index) in cat3" :key="index">
-      <h2>{{item.type}}</h2>
-      <p v-for="(item,index) in item.count1" :key="index">{{item.catname}}</p>
-    </li> 
-  </ul>  
-</div>
-<foot :sel=sel></foot> 
-</div>
-
-
+                </li>
+            </ul>
+        </section>
+        <section class="menu_right" ref="menuFoodList">
+            <ul>
+                <li v-for="i in 30" :key="i" ref="foodList">
+                    {{i}}男装
+ 
+                      <div v-for="i in 10" :key="i">
+                         <img src="/src/assets/image/nav9.png" alt=""><span>{{i}}T恤</span> 
+                      </div>
+                  
+                </li>
+            </ul>
+        </section>
+    </section>
+<foot :sel=sel></foot>     
+  </div>
 </template>
 
-
 <script>
-import foot from "../../components/foot";
-import {cats,cat} from '../../service/getData'
 import { XHeader,Tabbar, TabbarItem } from 'vux'
+import foot from "../../components/foot";
+import BScroll from 'better-scroll'
 export default {
-name: 'page-search',
-data() {
-  return {
-    sel:1,
-    value: '',
-    // 默认数据  
-    cat1: [],
-    catFdq: [],
-    cat3: [],
-    sub896:false,
-    sub3744:false,
- 
-  }
-},
+  data(){
+    return {
+      sel:1,
+      menuIndex: 1, //已选菜单索引值，默认为0
+      shopListTop: [], //商品列表的高度集合
+      menuIndexChange: true,//解决选中index时，scroll监听事件重复判断设置index的bug
+    }
+  },
+  mounted(){
+          this._calculateHeight();
+  },
     components:{
- XHeader,Tabbar, TabbarItem,foot
-    }, 
-created() {
-        //获取分类
-        cats().then(res => {
-            this.cat1 = res.count;
-        })
-        this.sub896=true
-},
-mounted(){
-        //获取废电器
-        cat('896').then(res => {
-            this.catFdq = res.count;
-        })
-        //获取报废汽车
-        cat('3744').then(res => {
-            this.cat3 = res.count;
-        })        
-},
-methods: {
-chang(e){
+ XHeader,foot
+    },   
+  methods: {
+            //获取食品列表的高度，存入shopListTop
+            _calculateHeight(){
+                const listContainer = this.$refs.menuFoodList;
+                // let foodList = this.$refs.foodList;
+              //  console.log(this.$refs.foodList)
+                const listArr = Array.from(listContainer.children[0].children);
+                listArr.forEach((item, index) => {
+                    this.shopListTop[index] = item.offsetTop;
+                });
+                this.listenScroll(listContainer)
+              //  console.log(this.shopListTop)
+            },
 
-  if(e==896){
-this.sub896=true;this.sub3744=false;
-  }else if(e==3744){
-this.sub896=false;this.sub3744=true;
-  }else{
-this.sub896=false;this.sub3744=false;
+            //当滑动食品列表时，监听其scrollTop值来设置对应的食品列表标题的样式
+            listenScroll(element){
+                this.foodScroll = new BScroll(element, {
+                    probeType: 3,
+                    deceleration: 0.001,
+                    bounce: false,
+                    swipeTime: 2000,
+                    click: true,
+                });
+
+                const wrapperMenu = new BScroll('#wrapper_menu', {
+                    click: true,
+                });
+
+                const wrapMenuHeight = this.$refs.wrapperMenu.clientHeight;
+                this.foodScroll.on('scroll', (pos) => {
+                    if (!this.$refs.wrapperMenu) {
+                        return 
+                    }
+                   
+                    this.shopListTop.forEach((item, index) => {
+                        if (this.menuIndexChange && Math.abs(Math.round(pos.y)) >= item) {
+                            this.menuIndex = index+1;
+                            const menuList=this.$refs.wrapperMenu.querySelectorAll('.activity_menu');
+                            const el = menuList[0];
+                            wrapperMenu.scrollToElement(el, 800, 0, -(wrapMenuHeight/2 - 50));
+                        }
+                    })
+                })
+            },
+            //点击左侧食品列表标题，相应列表移动到最顶层
+            chooseMenu(index){
+                this.menuIndex = index;
+                //menuIndexChange解决运动时listenScroll依然监听的bug
+                this.menuIndexChange = false;
+                this.foodScroll.scrollTo(0, -this.shopListTop[index-1], 400);
+                this.foodScroll.on('scrollEnd', () => {
+                    this.menuIndexChange = true;
+                })
+            },            
+  },
+  watch: {
+
   }
-
 }
-}
-
-
-}
-
 </script>
 
-
+<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-.cat{
-  padding: 44px 0 56px;
-  overflow: auto;
-  box-sizing: border-box
-}
-.left{
-  width:33%;
-  height: 100%;
-  float:left;
-      overflow-y: auto;
-      border-right: 1px solid #000000;
-      li{
-        height:60px;
-      }
-
-}
-.right{
-  width:66%;
-  height: 100%;
-  float:left;
-      overflow-y: auto;
-            li{
-        min-height:70px;
-        p{
-          height: 60px;
-        }
-      }
-}
-// .cat {
-//     position: absolute;
-//     top: 0;
-//     right: 0;
-//     bottom: 53px;
-//     left: 0;
+// .catWrapper{
+//   padding: 44px 0 56px;
+//   box-sizing: border-box;
+//   height: auto;
 // }
-.weui-tabbar{position: fixed}
+.menu_container {
+    display: flex;
+    position: absolute;
+    top: 46px;
+    bottom: 56px;
+    width: 100%;
+    overflow-y: hidden;
+}
+.menu_left{
+  width: 20%;
+  float: left;
+  background-color: #fff;
+  margin-right: 10px;
+  li{
+    height: 50px;
+  }
+}
+.menu_right{
+  width: 80%;
+  float: left;
+  li{
+    list-style: none
+  }  
+}
+.menu_container .menu_left .activity_menu {
+    border-left: 0.15rem solid #3190e8;
+    background-color: #fff;
+}
 </style>

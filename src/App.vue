@@ -32,10 +32,10 @@ export default {
 html, body {
   height: 100%;
   width: 100%;
-  overflow-x: hidden;
+  // overflow-x: hidden;
 }
 body {
-  background-color: #fbf9fe;
+  background-color: #f5f5f5;
 }
 .child-view {
   position: relative;

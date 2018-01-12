@@ -13,64 +13,72 @@
       </search>
       <router-link to="/login" class="login">登录</router-link> 
     </header>
-
-
     <swiper :list="demo01_list" v-model="demo01_index" @on-index-change="demo01_onIndexChange"></swiper>
+
     <flexbox :gutter="0" wrap="wrap">
-      <flexbox-item :span="1/5"><div class="flex-demo"><img src="https://img.alicdn.com/tfs/TB1Kxe8QFXXXXbSXVXXXXXXXXXX-183-129.png" alt="" srcset=""></div></flexbox-item>
-      <flexbox-item :span="1/5"><div class="flex-demo"><img src="https://img.alicdn.com/tfs/TB1Kxe8QFXXXXbSXVXXXXXXXXXX-183-129.png" alt="" srcset=""></div></flexbox-item>
-      <flexbox-item :span="1/5"><div class="flex-demo"><img src="https://img.alicdn.com/tfs/TB1Kxe8QFXXXXbSXVXXXXXXXXXX-183-129.png" alt="" srcset=""></div></flexbox-item>
-      <flexbox-item :span="1/5"><div class="flex-demo"><img src="https://img.alicdn.com/tfs/TB1Kxe8QFXXXXbSXVXXXXXXXXXX-183-129.png" alt="" srcset=""></div></flexbox-item>
-      <flexbox-item :span="1/5"><div class="flex-demo"><img src="https://img.alicdn.com/tfs/TB1Kxe8QFXXXXbSXVXXXXXXXXXX-183-129.png" alt="" srcset=""></div></flexbox-item>
-      <flexbox-item :span="1/5"><div class="flex-demo"><img src="https://img.alicdn.com/tfs/TB1Kxe8QFXXXXbSXVXXXXXXXXXX-183-129.png" alt="" srcset=""></div></flexbox-item>
-      <flexbox-item :span="1/5"><div class="flex-demo"><img src="https://img.alicdn.com/tfs/TB1Kxe8QFXXXXbSXVXXXXXXXXXX-183-129.png" alt="" srcset=""></div></flexbox-item>
-      <flexbox-item :span="1/5"><div class="flex-demo"><img src="https://img.alicdn.com/tfs/TB1Kxe8QFXXXXbSXVXXXXXXXXXX-183-129.png" alt="" srcset=""></div></flexbox-item>
-      <flexbox-item :span="1/5"><div class="flex-demo"><img src="https://img.alicdn.com/tfs/TB1Kxe8QFXXXXbSXVXXXXXXXXXX-183-129.png" alt="" srcset=""></div></flexbox-item>
-      <flexbox-item :span="1/5"><div class="flex-demo"><img src="https://img.alicdn.com/tfs/TB1Kxe8QFXXXXbSXVXXXXXXXXXX-183-129.png" alt="" srcset=""></div></flexbox-item>
+      <flexbox-item :span="1/5" v-for="i in 10" :key="i">
+        <div class="flex-demo"><img src="/src/assets/image/nav9.png" alt=""><span>链接{{i}}</span></div>
+      </flexbox-item>
   </flexbox>
-    <swiper auto height="30px" direction="vertical" :interval=2000 class="text-scroll" :show-dots="false">
-      <swiper-item><p>义务爱了 fghdfhdf 完成传奇世界H5-王者归来任务 获得20金币</p></swiper-item>
-      <swiper-item><p>基本世神 兑换《传奇世界H5》畅玩级礼包 消耗30金币</p></swiper-item>
-      <swiper-item><p>零哥章魚 完成传奇世界H5-王者归来任务 获得30金币</p></swiper-item>
-      <swiper-item><p>做迎而為 兑换【饿了么】畅享美食红包 消耗20金币</p></swiper-item>
-      <swiper-item><p>只知道不知道 兑换【饿了么】畅享美食红包 消耗20金币</p></swiper-item>
-      <swiper-item><p>基本世神 兑换《传奇世界H5》畅玩级礼包 消耗30金币</p></swiper-item>
-    </swiper>
-    <scroller lock-y :scrollbar-x=false>
-      <div class="box1">
-        <div class="box1-item" v-for="i in 7" :key="i"><span>{{' ' + i + ' '}}</span></div>
-      </div>
-    </scroller>
-    <grid :cols="2">
+  <div class="express-news">
+    <a href="#" class="tit">NEWS</a>
+    <div class="news-list-wrapper">
+        <swiper auto height="30px" direction="vertical" :interval=2000 class="text-scroll" :show-dots="false">
+          <swiper-item  v-for="i in 10" :key="i"><p>{{i}}义务爱了 fghdfhdf 完成传奇世界H5-王者归来任务 获得20金币</p></swiper-item>
+        </swiper>    
+    </div>
+    <a href="#" class="more">更多</a>
+  </div>
+
+<div class="future">
+  <img src="/src/assets/image/1.jpg" alt="">
+  <scroller lock-y :scrollbar-x="false">
+    <div class="box1">
+      <div class="box1-item" v-for="i in 7" :key="i"><img src="/src/assets/image/2.jpg" alt=""></div>
+    </div>
+  </scroller>
+</div>
+
+<divider>为您推荐</divider>
+
+
+    <flexbox :gutter="0" wrap="wrap">
+      <flexbox-item :span="1/2" v-for="i in 10" :key="i">
+        <div class="tuijian">
+          <img src="/src/assets/image/3.jpg" alt="">
+          <span class="title">^_^{{i}}小猪佩奇饼干 山楂薏米蔬菜饼干 儿童零食罐装100g 山楂口味*1瓶</span></div>
+      </flexbox-item>
+  </flexbox>
+    <!-- <grid :cols="2">
       <grid-item v-for="i in 6" :key="i">
         <span class="grid-center">{{i}}
         <img src="http://www.ezaisheng.com/file/upload/201712/28/14-56-57-26-50057.png" alt="" srcset=""></span>
       </grid-item>
-    </grid>
+    </grid> -->
 
 
-<div id="search-popup" class="search-popup" style="display: block;"> 
+<div id="search-popup" class="search-popup"  v-show="showSearch"> 
   <div class="hotwords swiper-container-horizontal swiper-container-free-mode"> 
     <p class="hotwords-tit">热搜
     </p> 
     <div class="swiper-wrapper"> 
-      <span class="swiper-slide" style="width: 75px;">熊本熊
+      <span class="swiper-slide" >熊本熊
       </span> 
-      <span class="swiper-slide" style="width: 75px;">T恤
+      <span class="swiper-slide" >T恤
       </span> 
-      <span class="swiper-slide swiper-slide-prev" style="width: 75px;">免烫衬衫
+      <span class="swiper-slide swiper-slide-prev" >免烫衬衫
       </span> 
-      <span class="swiper-slide swiper-slide-active" style="width: 75px;">帆布鞋
+      <span class="swiper-slide swiper-slide-active" >帆布鞋
       </span> 
-      <span class="swiper-slide swiper-slide-next" style="width: 75px;">短袖衬衫
+      <span class="swiper-slide swiper-slide-next" >短袖衬衫
       </span> 
-      <span class="swiper-slide" style="width: 75px;">polo
+      <span class="swiper-slide" >polo
       </span> 
-      <span class="swiper-slide" style="width: 75px;">空调衫
+      <span class="swiper-slide" >空调衫
       </span> 
-      <span class="swiper-slide" style="width: 75px;">牛仔裤
+      <span class="swiper-slide" >牛仔裤
       </span> 
-      <span class="swiper-slide" style="width: 75px;">休闲裤
+      <span class="swiper-slide" >休闲裤
       </span> 
     </div> 
   </div> 
@@ -84,29 +92,32 @@
       </li>
     </ul> 
   </div> 
-  <div id="clear-srhHistory" class="clear-srhHistory">清除历史
+  <div id="clear-srhHistory" class="clear-srhHistory" @click="delhistory">清除历史
   </div> 
 </div>
-
-    <foot :sel=sel></foot>
+      <confirm v-model="historyshow"
+      title="确定要清空吗?">
+        <p style="text-align:center;">??</p>
+      </confirm>
+    <foot :sel="sel"></foot>
   </div>
 </template>
 
 <script>
-import { Swiper,XHeader,SwiperItem,Flexbox,FlexboxItem,Scroller,Grid, GridItem,Tabbar, TabbarItem, Search} from 'vux'
+import { Swiper,XHeader,SwiperItem,Flexbox,FlexboxItem,Scroller,Grid, GridItem,Tabbar, TabbarItem, Search,Confirm,Divider} from 'vux'
 import foot from "../../components/foot";
 
 const baseList = [{
   url: 'javascript:',
-  img: 'https://static.vux.li/demo/1.jpg',
+  img: '/src/assets/image/l1.jpg',
   title: '送你们朵fua'
 }, {
   url: 'javascript:',
-  img: 'https://static.vux.li/demo/2.jpg',
+  img: '/src/assets/image/l5.jpg',
   title: '送你一辆车'
 }, {
   url: 'javascript:',
-  img: 'https://static.vux.li/demo/3.jpg',
+  img: '/src/assets/image/l1.jpg',
   title: '送你一次旅行'
 }]
 
@@ -118,7 +129,9 @@ export default {
       demo01_index: 0,
       results: [],
       autoFixed: true,
-      value: ''
+      value: '',
+      showSearch:false,
+      historyshow:false
     }
   },
   components: {
@@ -129,7 +142,7 @@ export default {
     FlexboxItem,
     Scroller,
     Grid, GridItem,
-    Tabbar, TabbarItem, Search,XHeader
+    Tabbar, TabbarItem, Search,XHeader,Confirm,Divider
   },
 
   methods: {
@@ -155,10 +168,15 @@ export default {
       })
     },
     onFocus () {
-      console.log('on focus')
+      console.log('on focus');
+      this.showSearch=true
     },
     onCancel () {
       console.log('on cancel')
+      this.showSearch=false
+    },
+    delhistory(){
+this.historyshow=true
     }
   },
 
@@ -177,37 +195,65 @@ function getResult (val) {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+.tuijian{
+  background-color: #fff;
+  margin-bottom: 4px;
+  padding-bottom: 5px;
+  .title{
+    height: 33px;
+    font-size: 12px;
+    line-height: 17px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    margin: 5px    
+  }
+  img{width: 100%}
+}
+.vux-flexbox-item:nth-child(2n+1) .tuijian {
+    margin-right: 2PX;   
+}
+.vux-flexbox-item:nth-child(2n) .tuijian {
+    margin-left: 2PX;
+}
 .search-popup {
     position: fixed;
     top: 44px;
     max-width: 640px;
     width: 100%;
     height: 100%;
-    display: none;
+  //  display: none;
     color: #000;
-    background-color: rgba(255,255,255,0.8);
+    background-color: rgba(255,255,255,1);
     z-index: 1000;
-    padding: 20px
+    padding: 10px 20px;
+    box-sizing: border-box
 }
 .hotwords {
     width: 100%;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid #000;
-    overflow-x: hidden;
 }
 .swiper-wrapper{
-  overflow-x: auto;
-  white-space: nowrap;
+  // overflow-x: auto;
+  // white-space: nowrap;
   .swiper-slide{
     display: inline-block;
-    padding: 0 5px
+    padding: 0 6px;
+    background-color: #ddd;
+    border-radius: 6px;
+    margin: 5px;
+    font-size: 14px
   }
 }
 .search-history{
   margin: 20px 0 0;
   li{
-    list-style: none;
-    border-bottom: 1px dotted #999
+    display: inline-block;
+    padding: 0 6px;
+    background-color: #ddd;
+    border-radius: 6px;
+    margin: 5px;
+    font-size: 14px
   }
 }
 .clear-srhHistory{
@@ -222,8 +268,8 @@ function getResult (val) {
 }
 .home{
   padding: 44px 0 56px;
-  overflow: auto;
-  box-sizing: border-box
+  box-sizing: border-box;
+  height: auto;
 }
 header{
   position: fixed;
@@ -231,7 +277,7 @@ header{
   left: 0;
   right: 0;
   z-index: 1;
-  background-color: #29afa3;
+  background-color: #de181b;
   height: 44px;
 }
 .vux-search-box{
@@ -249,12 +295,16 @@ width: 100%
  .flex-demo {
   text-align: center;
   color: #fff;
-  background-color: #fff;
   margin: 10% 0 0;
   background-clip: padding-box;
   img{
-    width: 100%;
-    height: 100%;
+    width: 50%;
+    height: 50%;
+  }
+  span{
+    color: #000;
+    display: block;
+    font-size: 12px
   }
 }
 .text-scroll {
@@ -270,13 +320,12 @@ width: 100%
 .box1 {
   height: 100px;
   position: relative;
-  width: 1490px;
+  width: 700px;
 }
 .box1-item {
-  width: 200px;
+   width: 100px;
   height: 100px;
   background-color: #ccc;
-  margin-left: 15px;
   float: left;
   text-align: center;
   line-height: 100px;
@@ -292,5 +341,34 @@ width: 100%
     width: 80%
   }
 }
-
+.express-news{
+  margin: 10px 0;
+  position: relative;
+  .news-list-wrapper{
+    padding: 0 60PX 0 75PX;
+  }
+  a.tit{
+position: absolute;left: 10px;top: 5px;font-weight: bold;color: #de181b
+  }
+  a.more{
+position: absolute;right: 5px;top: 5px;color: #666;font-size: 14px
+  }
+  .text-scroll{
+    border: 0;
+    p{
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+}
+.future{
+  text-align: center;
+  img{
+    width: 60%;
+  }
+  .box1 img{
+    width: 100%
+  }
+}
 </style>
