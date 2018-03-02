@@ -5,11 +5,13 @@ import Cat from '@/page/cat/index'
 import Auction from '@/page/auction/index'
 import Mall from '@/page/mall/index'
 import cattest from '@/page/cat/test'
+import Search from '@/page/search/search'
 import Order from '@/page/profile/order'
 import List from '@/page/cat/list'
 import Detail from '@/page/cat/detail'
 import Cart from '@/page/cart/index'
 import Login from '@/page/login/login'
+import Reg from '@/page/login/reg'
 //const confirmOrder = r => require.ensure([], () => r(require('../page/confirmOrder/confirmOrder')), 'confirmOrder')
 // const remark = r => require.ensure([], () => r(require('../page/confirmOrder/children/remark')), 'remark')
 // const payment = r => require.ensure([], () => r(require('../page/confirmOrder/children/payment')), 'payment')
@@ -26,9 +28,13 @@ const finish = r => require.ensure([], () => r(require('../page/confirmOrder/chi
 
 const profile = r => require.ensure([], () => r(require('../page/profile/index')), 'profile')
 const info = r => require.ensure([], () => r(require('../page/profile/children/info')), 'info')
+const faxian = r => require.ensure([], () => r(require('../page/faxian/index')), 'faxian')
 // const login = r => require.ensure([], () => r(require('../page/login/login')), 'login')
 
+import Baidu from '@/page/baidu/index'
+
 Vue.use(Router)
+
 export default new Router({
   routes: [    
     {
@@ -40,6 +46,21 @@ export default new Router({
       name: 'Home',
       component: Home
     },
+    {
+      path: '/baidu',
+      name: 'Baidu',
+      component: Baidu
+    },    
+    {
+      path: '/search',
+      name: 'Search',
+      component: Search
+    },    
+    {
+      path: '/faxian',
+      name: 'faxian',
+      component: faxian
+    },    
         //确认订单页
         {
           path: '/confirmOrder',
@@ -82,7 +103,7 @@ export default new Router({
       component: List
     },
     {
-      path: '/detail/:cat/:id',
+      path: '/detail/:id',
       name: 'Detail',
       component: Detail
     },
@@ -116,6 +137,11 @@ export default new Router({
       name: 'Login',
       component: Login
     },
+    {
+      path: '/reg',
+      name: 'Reg',
+      component: Reg
+    },    
     {
       path: '/order',
       name: 'Order',

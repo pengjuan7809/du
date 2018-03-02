@@ -1,7 +1,7 @@
 <template>
   <div class="foot">
-    <tabbar v-model="sel">
-      <tabbar-item  link="/home">
+    <tabbar v-model="selecte">
+      <tabbar-item link="/home">
         <x-icon type="home" size="30"  slot="icon"></x-icon>
         <span slot="label">首页</span>
       </tabbar-item>
@@ -9,7 +9,7 @@
         <x-icon type="navicon-round" size="30"  slot="icon"></x-icon>
         <span slot="label">分类</span>
       </tabbar-item>
-      <tabbar-item  link="/home">
+      <tabbar-item  link="/faxian">
       <x-icon type="compass" size="30"  slot="icon"></x-icon>
         <span slot="label">发现</span>
       </tabbar-item>
@@ -21,6 +21,10 @@
         <x-icon type="person" size="30"  slot="icon"></x-icon>
         <span slot="label">我的</span>
       </tabbar-item>
+      <tabbar-item  link="/baidu">
+        <x-icon type="person" size="30"  slot="icon"></x-icon>
+        <span slot="label">地图</span>
+      </tabbar-item>      
     </tabbar>
   </div>
 </template>
@@ -28,20 +32,20 @@
 <script>
 import {Tabbar, TabbarItem} from 'vux'
 export default {
-  // props: {
-  //   sel: {
-  //     type: Number,
-  //     required: true,
-  //   }   
-  // }, 
-   props:['sel'] ,
+  props: {
+    sel: {
+      type: Number,
+      required: true,
+    }   
+  }, 
+  // props:['sel'] ,
   data () {
     return {
-        // selecte:'/home' 
+         selecte:this.sel 
     }
   },
   mounted(){
-
+// console.log(this.sel);
 
   },
   components:{

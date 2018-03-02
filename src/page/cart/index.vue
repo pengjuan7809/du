@@ -1,12 +1,12 @@
 <template>
-<div style="  padding-top: 46px;  padding-bottom: 55px;">
-  <x-header :left-options="{backText: ''}"  style="width:100%;position:fixed;left:0;top:0;z-index:100;">购物车</x-header>
+<div style="padding-top: 46px;  padding-bottom: 111px;">
+  <x-header :left-options="{showBack: false}"  style="width:100%;position:fixed;left:0;top:0;z-index:100;">购物车</x-header>
   <main class="cart_box">
   <div class="cart_content clearfix" v-for="(item,index1) in cartDatas" :key="index1">
       <div class="cart_shop clearfix">
           <div class="cart_check_box">
               <div class="check_box">
-<input type="checkbox" class="ui-checkbox c-shop" v-model="item.selected"  @click="selectShop(item)">
+                <input type="checkbox" class="ui-checkbox c-shop" v-model="item.selected"  @click="selectShop(item)">
               </div>
           </div>
           <div class="shop_info clearfix">
@@ -20,17 +20,17 @@
       <div class="cart_item"  v-for="(good,index) in item.list" :key="index">
           <div class="cart_item_box">
               <div class="check_box">
-<input type="checkbox" class="ui-checkbox c-goods" v-model="good.selected" @click="selecteItem(good)">
+                <input type="checkbox" class="ui-checkbox c-goods" v-model="good.selected" @click="selecteItem(good)">
               </div>
           </div>
           <div class="cart_detial_box clearfix">
               <a href="#" class="cart_product_link">
-                  <img src="https://gd1.alicdn.com/imgextra/i1/677978154/TB2o7HueFXXXXc5XXXXXXXXXXXX_!!677978154.jpg_400x400.jpg" alt="">
+                  <img :src="good.img" alt="">
               </a>
               <div class="item_names">
-                  <a href="#">
+                  <router-link :to="{path:'/detail/'+good.id}">
                       <span>{{good.name}}</span>
-                  </a>
+                  </router-link>
               </div>
               <div class="cart_weight">
                   <i class="my_weigth">重量:0.45kg</i>
@@ -51,38 +51,38 @@
                   </div>
               </div>
           </div>
-      </div>
-    
+      </div>    
   </div>
   </main>
-		<footer class="cart_footer">
-		    <div class="all_check_box">
-		        <div class="check_box">
-							<input type="checkbox" name="c-all" class="ui-checkbox c-all" v-model="selecteAllState" @click="selecteAll">
-		        </div>
-		        <span>全选</span>
-		    </div>
-		    <div class="count_money_box">
-		        <div class="heji">
-		            <strong>合计:</strong>
-		            <strong>￥</strong>
-		            <strong>{{totalNowPrice}}</strong>
-		        </div>
-		        <div class="total_money clearfix">
-		            <span>总额:</span>
-		            <i>￥</i>
-		            <span>537.80</span>
-		            <span>立减:</span>
-		            <i>￥</i>
-		            <span>0.00</span>
-		        </div>
-		            
-                        <router-link :to="{path:'/confirmOrder'}"  class="go_pay">                       
-		                <span>去计算({{totalNum}})</span> 
-                        </router-link>
-		           
-		    </div>
-		</footer>
+<footer class="cart_footer">
+    <div class="all_check_box">
+        <div class="check_box">
+            <input type="checkbox" name="c-all" class="ui-checkbox c-all" v-model="selecteAllState" @click="selecteAll">
+        </div>
+        <span>全选</span>
+    </div>
+    <div class="count_money_box">
+        <div class="heji">
+            <strong>合计:</strong>
+            <strong>￥</strong>
+            <strong>{{totalNowPrice}}</strong>
+        </div>
+        <div class="total_money clearfix">
+            <span>总额:</span>
+            <i>￥</i>
+            <span>537.80</span>
+            <span>立减:</span>
+            <i>￥</i>
+            <span>0.00</span>
+        </div>
+            
+        <router-link :to="{path:'/confirmOrder'}"  class="go_pay">                       
+        <span>去计算({{totalNum}})</span> 
+        </router-link>
+            
+    </div>
+</footer>
+<foot :sel="sel"> </foot>
     <div v-transfer-dom>
         <confirm v-model="show"
         :close-on-confirm="false"
@@ -100,7 +100,7 @@
 
 <script>
 import {XHeader, Confirm,Loading, TransferDomDirective as TransferDom } from 'vux'
-
+import foot from "../../components/foot";
 const goodsObj = [
   {
     shop_name : '大胖的店',
@@ -201,21 +201,33 @@ const goodsObj = [
     ]
   },
 ]
+const itemObj = [
+      {
+    shop_name : '大胖的店',
+    selected : false,
+    list : []
+      }
+]
 export default {
     data() {
-    return {
-        cartDatas : goodsObj,
-        selecteAllState: false,
-				show: false,
-				shopindex:'',
-				goodsindex:''
-    }
-    }, 
+        return {
+            sel:3,
+           // cartDatas : goodsObj,
+            selecteAllState: false,
+            show: false,
+            shopindex:'',
+            goodsindex:'',
+            cartDatas:itemObj
+        }
+    },
+    mounted(){
+        this.initdata();
+    } ,
     directives: {
-    TransferDom
+        TransferDom
     },   
     components:{
-    XHeader,Confirm,Loading
+        XHeader,Confirm,Loading,foot
     },
     computed: {
         totalNowPrice () {
@@ -228,7 +240,7 @@ export default {
             })
             })
             return price.toFixed(2)
-				},
+		},
         totalNum () {
             let num = 0
             this.cartDatas.forEach(shop => {
@@ -239,14 +251,32 @@ export default {
             })
             })
             return num
-				},			
+		},			
     } ,
-    methods:{			
-		// 单个选择
-		selecteItem (item) {
-		  item.selected = !item.selected
-			this.checkSelect()
-		},
+    methods:{	
+        initdata(){
+            let _this=this;
+            _this.$http.get('/cart').then((res)=>{ 
+                var list=[];              
+                res.data.forEach((item,index) => {
+                    list.push({
+                        id:item.product_id,
+                        name : item.product_name,
+                        price:item.product_uprice,
+                        realStock : item.product_num,
+                        fare: item.goods_num,
+                        num: item.goods_num,
+                        img: item.product_img_url,
+                        selected  : false    
+                    });
+                });
+                _this.cartDatas[0].list=list;
+                  console.log(_this.cartDatas);
+
+            },(err)=>{
+
+            })
+        },
          // 判断是否选择所有商品的全选
         checkSelect () {
           let allSelected = true
@@ -261,7 +291,12 @@ export default {
             shop.selected = shopSelectAll
           })
           this.selecteAllState = allSelected
-        },
+        },        		
+		// 单个选择
+		selecteItem (item) {
+		  item.selected = !item.selected
+			this.checkSelect()
+		},
         // 每个店铺全选
         selectShop (shop) {
           shop.selected = !shop.selected
@@ -314,11 +349,11 @@ export default {
             console.log('on cancel')
         },
         onConfirm () {					
-						console.log('on confirm')
-						this.cartDatas[this.shopindex].list.splice(this.goodsindex,1)
-						if(this.cartDatas[this.shopindex].list.length<1){
-							this.cartDatas.splice(this.cartDatas[this.shopindex],1)
-						}
+            console.log('on confirm')
+            this.cartDatas[this.shopindex].list.splice(this.goodsindex,1)
+            if(this.cartDatas[this.shopindex].list.length<1){
+                this.cartDatas.splice(this.cartDatas[this.shopindex],1)
+            }
             this.$vux.loading.show({
                 transition: '',
                 text: '请求加载中...'
@@ -501,6 +536,15 @@ body {
 .cart_detial_box .item_names {
     height: 34px;
     overflow: hidden;
+    a{
+        display: block;
+        line-height: 21px;
+        height: 21px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 80%;
+    }
 }
 
 .cart_detial_box .cart_weight {
@@ -591,7 +635,7 @@ body {
     height: 50px;
     border-top: 1px solid #cccccc;
     position: fixed;
-    bottom: 0;
+    bottom: 56px;
     left: 0;
     background-color: #fff;
 }

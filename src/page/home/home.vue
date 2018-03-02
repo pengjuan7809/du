@@ -11,13 +11,15 @@
       @on-submit="onSubmit"
       ref="search">
       </search>
-      <router-link to="/login" class="login">登录</router-link> 
+      <router-link to="/profile" class="login" v-if="userInfo"><x-icon type="person" size="30"></x-icon></router-link>
+      <router-link to="/login" class="login" v-else>登录</router-link> 
     </header>
+
     <swiper :list="demo01_list" v-model="demo01_index" @on-index-change="demo01_onIndexChange"></swiper>
 
     <flexbox :gutter="0" wrap="wrap">
       <flexbox-item :span="1/5" v-for="i in 10" :key="i">
-        <div class="flex-demo"><img src="/src/assets/image/nav9.png" alt=""><span>链接{{i}}</span></div>
+        <div class="flex-demo"><img src="../../assets/image/nav9.png" alt=""><span>链接{{i}}</span></div>
       </flexbox-item>
   </flexbox>
   <div class="express-news">
@@ -31,22 +33,27 @@
   </div>
 
 <div class="future">
-  <img src="/src/assets/image/1.jpg" alt="">
+  <img src="../../assets/image/1.jpg" alt="">
   <scroller lock-y :scrollbar-x="false">
-    <div class="box1">
-      <div class="box1-item" v-for="i in 7" :key="i"><img src="/src/assets/image/2.jpg" alt=""></div>
+    <div class="box1" :style="{width:wid+'px'}">
+      <div class="box1-item" v-for="(item,index) in recomDatas" :key="index">
+        <router-link :to="{path:'/detail/'+item.product_id}">
+          <img :src="item.product_img_url" alt="">
+        </router-link>        
+      </div>
     </div>
   </scroller>
 </div>
 
-<divider>为您推荐</divider>
-
-
+<divider>为您推荐{{wid}}</divider>
     <flexbox :gutter="0" wrap="wrap">
-      <flexbox-item :span="1/2" v-for="i in 10" :key="i">
+      <flexbox-item :span="1/2" v-for="(item,index) in homeDatas" :key="index">
         <div class="tuijian">
-          <img src="/src/assets/image/3.jpg" alt="">
-          <span class="title">^_^{{i}}小猪佩奇饼干 山楂薏米蔬菜饼干 儿童零食罐装100g 山楂口味*1瓶</span></div>
+        <router-link :to="{path:'/detail/'+item.product_id}">
+          <img :src="item.product_img_url" alt="">
+          <span class="title">{{item.product_name}}</span>
+        </router-link>             
+        </div>
       </flexbox-item>
   </flexbox>
     <!-- <grid :cols="2">
@@ -104,6 +111,7 @@
 </template>
 
 <script>
+import {mapGetters,mapState, mapActions,mapMutations} from 'vuex' 
 import { Swiper,XHeader,SwiperItem,Flexbox,FlexboxItem,Scroller,Grid, GridItem,Tabbar, TabbarItem, Search,Confirm,Divider} from 'vux'
 import foot from "../../components/foot";
 
@@ -131,8 +139,19 @@ export default {
       autoFixed: true,
       value: '',
       showSearch:false,
-      historyshow:false
+      historyshow:false,
+      homeDatas : [],
+      recomDatas:[],
+      wid:0
     }
+  },
+  mounted(){
+    this.getData();
+    //  this.$toast.top('top text 自定义文本');
+   // this.$toast('top text 自定义文本','top');
+    
+  //  console.log(this.$msgmsg)
+ 
   },
   components: {
     foot,
@@ -143,9 +162,43 @@ export default {
     Scroller,
     Grid, GridItem,
     Tabbar, TabbarItem, Search,XHeader,Confirm,Divider
-  },
+  },  
+computed:{
+  ...mapState(['userInfo']),
+},
+  methods: { 
+      ...mapActions([
+        'getUserInfo'
+      ]), 
+            getData(){              
+                let _this = this;
+                _this.$http.get('/recom').then((res)=>{
+                    _this.recomDatas = res.data;
+                    _this.wid=_this.recomDatas.length*110;
+                     // console.log(_this.recomDatas.length)
+                },(err)=>{
+                    console.log(err);
+                }),                
+                _this.$http.get('/home').then((res)=>{
+                    _this.homeDatas = res.data;
+                    // console.log(this.mainDatas)
+                },(err)=>{
+                    console.log(err);
+                });
+              if (window.sessionStorage.userInfo) {
+                _this.$http.get('/userinfo',{
+                  params:{
+                    uId:JSON.parse(window.sessionStorage.userInfo).user_id
+                  }
+                }).then((res)=>{
+                    _this.getUserInfo(res.data);
+                },(err)=>{
+                    console.log(err);
+                })   
+              }
 
-  methods: {
+
+            },    
     demo01_onIndexChange (index) {
       this.demo01_index = index
     },
@@ -164,19 +217,21 @@ export default {
       this.$vux.toast.show({
         type: 'text',
         position: 'top',
-        text: 'on submit'
+        text: 'loading'
       })
+      this.$router.push('/search')
     },
     onFocus () {
+      this.$router.push('/search')
       console.log('on focus');
-      this.showSearch=true
+     // this.showSearch=true
     },
     onCancel () {
       console.log('on cancel')
       this.showSearch=false
     },
     delhistory(){
-this.historyshow=true
+      this.historyshow=true
     }
   },
 
@@ -270,6 +325,7 @@ function getResult (val) {
   padding: 44px 0 56px;
   box-sizing: border-box;
   height: auto;
+  // overflow-y: auto
 }
 header{
   position: fixed;
@@ -320,15 +376,15 @@ width: 100%
 .box1 {
   height: 100px;
   position: relative;
-  width: 700px;
 }
 .box1-item {
-   width: 100px;
+  width: 100px;
   height: 100px;
   background-color: #ccc;
   float: left;
   text-align: center;
   line-height: 100px;
+  margin: 0 5px;
 }
 .box1-item:first-child {
   margin-left: 0;
@@ -371,4 +427,9 @@ position: absolute;right: 5px;top: 5px;color: #666;font-size: 14px
     width: 100%
   }
 }
+.vux-x-icon {
+  fill: #fff;
+}
+
+
 </style>

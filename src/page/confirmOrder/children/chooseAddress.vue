@@ -3,15 +3,15 @@
 <x-header :left-options="{backText: '返回'}"  style="width:100%;position:fixed;left:0;top:0;z-index:100;">收货地址</x-header>
 <div id="addressList" class="address_list">
     <swipeout class="vux-1px-tb">
-      <swipeout-item transition-mode="follow" v-for="i in 9" :key="i" >
+      <swipeout-item transition-mode="follow" v-for="(item,i) in address" :key="i" >
         <div slot="right-menu">
           <swipeout-button type="warn">删除</swipeout-button>
         </div>
-        <div slot="content"  @click.prevent.stop="chooseAddress()">
+        <div slot="content"  @click.prevent.stop="chooseAddress(item.address_id)">
             <ul class="selected"> 
-                <li class="icon"><icon  type="circle" v-if="i !== 1"></icon><icon  type="success" v-else></icon></li>
-                <li>{{i}}江苏南京市江宁区谷里镇银杏湖大道520号，南京银杏湖农业观光休闲有限公司 </li>
-                <li><strong>徐召飞</strong> 135****3037</li>   
+                <li class="icon"><icon  type="circle" v-if="item.isdefault !== '1'"></icon><icon  type="success" v-else></icon></li>
+                <li>{{item.addressarea}}</li>
+                <li><strong>{{item.sname}}</strong>{{item.user_phone}}</li>   
                 <li class="edit" adid="60577497" type="1"><icon type="search"></icon>编辑</li> 
             </ul> 
         </div>
@@ -30,23 +30,52 @@
 
 <script>
 import { XHeader, Swipeout, SwipeoutItem, SwipeoutButton,Icon  } from 'vux'
-    export default {
-        data(){
-            return {
-
-            }
-				},
+import {removeStore,getStore} from '@/config/mUtils'
+export default {
+    data(){
+        return {
+            address:[]
+        }
+    },
+    mounted(){
+        this.initData();
+    },
     components:{
-    XHeader, Swipeout, SwipeoutItem, SwipeoutButton,Icon 
+        XHeader, Swipeout, SwipeoutItem, SwipeoutButton,Icon 
     },
     methods:{
-                    //选择地址
-            chooseAddress(){
-               // this.CHOOSE_ADDRESS({address, index});
-                this.$router.go(-1);
-            },
+        //初始化信息
+        initData(){
+            let _this=this;
+            _this.$http.get('/address',{
+                params:{
+                    userId:JSON.parse(getStore('userInfo')).user_id
+                }
+            }).then((res)=>{
+                _this.address=res.data;
+            },(err)=>{
+                console.log(err);
+            })
+        },        
+                //选择地址
+        chooseAddress(Id){
+            let _this=this;
+            _this.$http.post('updateaddress',{
+                userId:JSON.parse(getStore('userInfo')).user_id,
+                addressId:Id,
+
+            }).then((res)=>{
+                this.$router.push('/confirmOrder');
+                console.log('success');
+            },(err)=>{
+                console.log('fail');
+            })            
+            
+            // this.CHOOSE_ADDRESS({address, index});
+           // this.$router.go(-1);
+        },
     }				
-    }
+}
 
 </script>
 
@@ -73,6 +102,7 @@ import { XHeader, Swipeout, SwipeoutItem, SwipeoutButton,Icon  } from 'vux'
     top: 46px;
     bottom: 46px;
     overflow-y: auto;
+    width: 100%;
     }
 .address_list ul {
     padding: 15px 40px;

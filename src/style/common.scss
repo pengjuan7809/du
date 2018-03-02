@@ -1,3 +1,9 @@
 .weui-search-bar{
   background-color: #29afa3
 }
+.vue-toast{
+  position: fixed;
+  bottom: 60px;
+  left: 50%;
+  z-index: 9999;
+}

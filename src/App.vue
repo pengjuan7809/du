@@ -1,5 +1,6 @@
 <template>
-  <div id="app" style="height:100%">
+  <div id="app">
+    <loading v-model="isLoading"></loading>
     <transition :name="transitionName">
       <router-view class="child-view"></router-view>
     </transition>
@@ -7,6 +8,8 @@
 </template>
 
 <script>
+import { Loading } from 'vux'
+import { mapState } from 'vuex'
 export default {
   name: 'app',
   data () {
@@ -14,6 +17,14 @@ export default {
       transitionName: 'slide-left'
     }
   },
+  components: {
+    Loading
+  },  
+   computed: {
+    ...mapState({
+      isLoading: state => state.isLoading
+    })
+  }, 
   mounted () {
   },
   //监听路由的路径，可以通过不同的路径去选择不同的切换效果
@@ -29,7 +40,7 @@ export default {
 
 <style lang="less">
 @import '~vux/src/styles/reset.less';
-html, body {
+html, body,#app {
   height: 100%;
   width: 100%;
   // overflow-x: hidden;

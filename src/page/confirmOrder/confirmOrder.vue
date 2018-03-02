@@ -1,9 +1,15 @@
 <template>
     <div class="confirmOrderContainer" style="  padding-top: 46px;  padding-bottom: 55px;">
-<x-header :left-options="{backText: ''}"  style="width:100%;position:fixed;left:0;top:0;z-index:100;">确认订单</x-header>
+    <x-header :left-options="{showBack: false,preventGoBack:true}"  style="width:100%;position:fixed;left:0;top:0;z-index:100;">
+    <router-link :to="{path:'/cart'}" slot="overwrite-left" >
+    <x-icon  type="ios-arrow-back" size="35" style="fill:#fff;position:relative;top:-8px;left:-3px;"></x-icon>
+    </router-link>
+    确认订单
+    </x-header>
 
     <group>
-      <cell title="彭娟娟 188****5324" :link="{path:'/confirmOrder/chooseAddress'}" inline-desc='北京昌平区六环以内沙河镇沙阳路北科院励行楼307 '></cell>
+      <cell :title="address.sname +'-'+address.user_phone " :link="{path:'/confirmOrder/chooseAddress'}" :inline-desc='address.addressarea ' v-if="address"></cell>
+      <cell title="请添加一个收获地址 " :link="{path:'/confirmOrder/chooseAddress/addAddress'}" inline-desc=' ' v-else></cell>
     </group>
     <group title="">
       <cell title="优惠" link="/confirmOrder/chooseAddress"  >    赠品      </cell>
@@ -31,15 +37,42 @@
 
 <script>
 import { XHeader,Cell, Group } from 'vux'
+import {removeStore,getStore} from '@/config/mUtils'
     export default {
         data(){
             return {
-
+                address:null
             }
-				},
+        },
+        mounted(){
+            this.initData();
+            
+        },
     components:{
     XHeader,Cell, Group
-    },				
+    },
+    methods:{
+        //初始化信息
+        initData(){
+            let _this=this;
+            _this.$http.get('/address',{
+                params:{
+                    userId:JSON.parse(getStore('userInfo')).user_id
+                }
+            }).then((res)=>{
+                res.data.forEach((item,index) => {
+                    if (item.isdefault=='1') {
+                        _this.address=item; 
+                       // console.log(_this.address);                        
+                    } 
+                });
+
+
+            },(err)=>{
+                console.log(err);
+            })
+        },          
+    }				
     }
 
 </script>

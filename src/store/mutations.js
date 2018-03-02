@@ -7,6 +7,7 @@ import {
 	RECORD_SHOPDETAIL,
 	RECORD_USERINFO,
 	GET_USERINFO,
+	SET_USERINFO,
 	CONFIRM_REMARK,
 	CONFIRM_INVOICE,
 	CHOOSE_SEARCH_ADDRESS,
@@ -30,11 +31,14 @@ import {
 	BUY_CART,
 } from './mutation-types.js'
 
-import {setStore, getStore} from '../config/mUtils'
+import {setStore, getStore,removeStore} from '../config/mUtils'
 
 // import {localapi, proapi} from 'src/config/env'
 
 export default {
+	updateLoadingStatus (state, payload) {
+		state.isLoading = payload.isLoading
+	  },	
 
 	// 记录用户信息
 	[RECORD_USERINFO](state, info) {
@@ -43,26 +47,31 @@ export default {
 		setStore('user_id', info.user_id);
 		setStore('user_name', info.user_name);
 	},
+	[SET_USERINFO](state, info) {
+		state.userInfo = info;
+		setStore('userInfo', JSON.stringify(info));
+	},	
 	//获取用户信息存入vuex
-	[GET_USERINFO](state) {
-		// state.userInfo = {...info};
-		if(localStorage.getItem('user_id')){
+	[GET_USERINFO](state,info) {
+		 state.userInfo = {...info};
+		// if(sessionStorage.getItem('user_id')){
 			
-			state.userInfo=  {
-				   user_id: localStorage.getItem('user_id'),
-				   user_name: localStorage.getItem('user_name')
-				 };			
+		// 	state.userInfo=  {
+		// 		   user_id: sessionStorage.getItem('user_id'),
+		// 		   user_name: sessionStorage.getItem('user_name')
+		// 		 };			
 			   
-		   }else{
-			state.userInfo = null;
+		//    }else{
+		// 	state.userInfo = null;
 			
-		   }		
+		//    }		
 	},
 
 	//退出登录
 	[OUT_LOGIN](state) {
 		state.userInfo = null;
 		state.login = false;
+		removeStore('userInfo');
 	}
 
 }

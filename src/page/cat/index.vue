@@ -4,27 +4,28 @@
     <section class="menu_container">
         <section class="menu_left" id="wrapper_menu" ref="wrapperMenu">
             <ul>
-                <li  v-for="i in 30" :key="i" class="menu_left_li" :class="{activity_menu: i == menuIndex}" @click="chooseMenu(i)">
-
-                    <span>{{i}}男装</span>
-
+                <li  v-for="(item,i) in catDatas" :key="i" class="menu_left_li" :class="{activity_menu: i == menuIndex}" @click="chooseMenu(i)">
+                        <span>{{item.category_name}}</span>                   
                 </li>
             </ul>
         </section>
         <section class="menu_right" ref="menuFoodList">
             <ul>
-                <li v-for="i in 30" :key="i" ref="foodList">
-                    {{i}}男装
- 
-                      <div v-for="i in 10" :key="i">
-                         <img src="/src/assets/image/nav9.png" alt=""><span>{{i}}T恤</span> 
-                      </div>
-                  
+                <li v-for="(item,i) in catDatas" :key="i" ref="foodList">
+                   <h3><router-link :to="{path:'/list/'+item.category_id}">{{item.category_name}}</router-link></h3> 
+                    <div class="category-style-1">
+                        <template v-for="(good,index) in goodDatas" >
+                             <router-link v-if="good.category_id==item.category_id"  :to="{path: '/detail/'+good.product_id}">
+                                <img :src="good.product_img_url" alt="">
+                                <span>{{good.product_name}}</span>
+                             </router-link>
+                        </template>
+                    </div>                  
                 </li>
             </ul>
         </section>
     </section>
-<foot :sel=sel></foot>     
+<foot :sel="sel"></foot>     
   </div>
 </template>
 
@@ -32,33 +33,62 @@
 import { XHeader,Tabbar, TabbarItem } from 'vux'
 import foot from "../../components/foot";
 import BScroll from 'better-scroll'
+import { setTimeout } from 'timers';
 export default {
   data(){
     return {
       sel:1,
-      menuIndex: 1, //已选菜单索引值，默认为0
+      menuIndex: 0, //已选菜单索引值，默认为0
       shopListTop: [], //商品列表的高度集合
       menuIndexChange: true,//解决选中index时，scroll监听事件重复判断设置index的bug
+      catDatas:[],
+      goodDatas:[]
     }
   },
-  mounted(){
-          this._calculateHeight();
+  created(){
+    this.getCatDatas();
+  },
+  mounted(){                 
+                    
   },
     components:{
- XHeader,foot
+        XHeader,foot
     },   
-  methods: {
+  methods: {     
+    getCatDatas(){
+        let _this=this;
+        _this.$http.get('/category').then((res)=>{
+            _this.catDatas=res.data;  
+               
+        },(err)=>{
+            console.log(err);        
+        });
+        _this.$http.get('/goods').then((res)=>{
+            _this.goodDatas=res.data;
+      // DOM 还没有更新       
+      this.$nextTick(function () {
+        // DOM 现在更新了
+        // `this` 绑定到当前实例
+        _this._calculateHeight();
+      })            
+         //   console.log(_this.goodDatas)   
+        },(err)=>{
+            console.log(err);        
+        })            
+        
+    },
             //获取食品列表的高度，存入shopListTop
             _calculateHeight(){
                 const listContainer = this.$refs.menuFoodList;
                 // let foodList = this.$refs.foodList;
-              //  console.log(this.$refs.foodList)
+                
                 const listArr = Array.from(listContainer.children[0].children);
+               // console.log(listArr)
                 listArr.forEach((item, index) => {
                     this.shopListTop[index] = item.offsetTop;
                 });
                 this.listenScroll(listContainer)
-              //  console.log(this.shopListTop)
+               // console.log(this.shopListTop)
             },
 
             //当滑动食品列表时，监听其scrollTop值来设置对应的食品列表标题的样式
@@ -83,7 +113,7 @@ export default {
                    
                     this.shopListTop.forEach((item, index) => {
                         if (this.menuIndexChange && Math.abs(Math.round(pos.y)) >= item) {
-                            this.menuIndex = index+1;
+                            this.menuIndex = index;
                             const menuList=this.$refs.wrapperMenu.querySelectorAll('.activity_menu');
                             const el = menuList[0];
                             wrapperMenu.scrollToElement(el, 800, 0, -(wrapMenuHeight/2 - 50));
@@ -96,7 +126,7 @@ export default {
                 this.menuIndex = index;
                 //menuIndexChange解决运动时listenScroll依然监听的bug
                 this.menuIndexChange = false;
-                this.foodScroll.scrollTo(0, -this.shopListTop[index-1], 400);
+                this.foodScroll.scrollTo(0, -this.shopListTop[index], 400);
                 this.foodScroll.on('scrollEnd', () => {
                     this.menuIndexChange = true;
                 })
@@ -135,9 +165,32 @@ export default {
 .menu_right{
   width: 80%;
   float: left;
+  margin-right: 10px;  
   li{
-    list-style: none
-  }  
+    list-style: none;
+    div.category-style-1{
+background-color: #fff;
+margin: 5px 0 20px;
+      a{
+width: 33%;
+display: inline-block;
+text-align: center;
+img{
+    width: 55px;
+    height: 55px;
+}
+span{
+    display: block;
+    text-align: center;
+    height: 30px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    }
+  } 
+        
+    }   
+}
 }
 .menu_container .menu_left .activity_menu {
     border-left: 0.15rem solid #3190e8;
