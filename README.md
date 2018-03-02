@@ -1,4 +1,4 @@
-# du
+# duu
 
 > A Vue.js project
 
